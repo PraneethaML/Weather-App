@@ -7,6 +7,7 @@ class CurrentWeatherController < ApplicationController
 
     def get_temperature
         @temperature = get_temperature_by_zipcode(weather_params[:zipcode], weather_params[:country])
+        flash[:notice] = 'Temperature retrieved successfully!' if @temperature.present?
         render 'index'
     end
 
@@ -14,31 +15,42 @@ class CurrentWeatherController < ApplicationController
 
      # fetch temperature based on zipcode and country
     def get_temperature_by_zipcode(zipcode, country)    
-        data = OpenWeatherConfig.client.current_zip(zipcode, country)
-        temperature = {
-            current: data.main.temp_c,
-            max: data.main.temp_max_c,
-            min: data.main.temp_min_c
-        }
+        begin
+            data = OpenWeatherConfig.client.current_zip(zipcode, country)
+            temperature = {
+                current: data.main.temp_c,
+                max: data.main.temp_max_c,
+                min: data.main.temp_min_c
+            }
+        rescue StandardError => e
+            puts "Error in getting temperature by zipcode------------------------: #{e}"
+            temperature = nil 
+        end
+        
     end
 
     def validate_params
         unless (weather_params[:zipcode].present? && weather_params[:country].present?)
-            render json: { error: 'Zipcode & Country must be present' }, status: :bad_request
+            flash.now[:error] = 'Zipcode & Country must be present'
+            render 'index'
+            return
         end
-
         unless valid_zipcode?(weather_params[:zipcode])
-            render json: { error: 'Invalid Zipcode. Zipcode should be a number' }, status: :bad_request
+            flash.now[:error] = 'Invalid Zipcode. Zipcode should be a number'
+            render 'index'
+            return
+          end
+        
+        unless valid_country_code?(weather_params[:country])
+            flash.now[:error] = 'Invalid Country Code. Country code should be a string of alphabets'
+            render 'index'
             return
         end
     
-        unless valid_country_code?(weather_params[:country])
-            render json: { error: 'Invalid Country Code. Country code should be string of alphabets' }, status: :bad_request
-            return
-        end
         zipcode_country_validity, error_message = valid_zipcode_in_country?(weather_params[:zipcode], weather_params[:country])
         unless zipcode_country_validity
-            render json: { error: error_message }, status: :bad_request
+            flash.now[:error] = error_message
+            render 'index'
             return
         end
     end
