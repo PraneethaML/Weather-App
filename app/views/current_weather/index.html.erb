@@ -1,0 +1,18 @@
+<h1>Get Temperature</h1>
+
+<%= form_tag(get_temperature_path, method: :post) do %>
+  <label for="zipcode">Zip Code:</label>
+  <%= text_field_tag(:zipcode) %>
+
+  <label for="country">Country:</label>
+  <%= text_field_tag(:country) %>
+
+  <%= submit_tag("Get Temperature") %>
+<% end %>
+
+<% if @temperature %>
+  <h2> Temperature </h2>
+  <p>Current Temperature: <%= @temperature[:current] %></p>
+  <p>Min Temperature: <%= @temperature[:min] %></p>
+  <p>Max Temperature: <%= @temperature[:max] %></p>
+<% end %>
