@@ -6,8 +6,12 @@ class CurrentWeatherController < ApplicationController
     end
 
     def get_temperature
-        @temperature = get_temperature_by_zipcode(weather_params[:zipcode], weather_params[:country])
-        flash[:notice] = 'Temperature retrieved successfully!' if @temperature.present?
+        result = get_temperature_by_zipcode(weather_params[:zipcode], weather_params[:country])
+        @temperature = result[:temperature]
+        flash.now[:notice] = 'Temperature retrieved successfully!' if @temperature.present?
+        if result[:cached]
+            flash.now[:notice] = "Result served from cache"
+        end
         render 'index'
     end
 
@@ -15,18 +19,29 @@ class CurrentWeatherController < ApplicationController
 
      # fetch temperature based on zipcode and country
     def get_temperature_by_zipcode(zipcode, country)    
-        begin
-            data = OpenWeatherConfig.client.current_zip(zipcode, country)
-            temperature = {
-                current: data.main.temp_c,
-                max: data.main.temp_max_c,
-                min: data.main.temp_min_c
-            }
-        rescue StandardError => e
-            puts "Error in getting temperature by zipcode------------------------: #{e}"
-            temperature = nil 
+        country = country.upcase
+        cache_key = "temperature_#{zipcode}_#{country}"
+        # Check if the cache exists before attempting to fetch
+        cache_exists = Rails.cache.exist?(cache_key)
+        # fetch the result from the cache
+        result = Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
+            # This block is only executed if the cache is empty or expired
+            begin
+                data = OpenWeatherConfig.client.current_zip(zipcode, country)
+                temperature = {
+                    current: data.main.temp_c,
+                    max: data.main.temp_max_c,
+                    min: data.main.temp_min_c
+                }
+                {temperature: temperature}
+            rescue StandardError => e
+                {temperature: nil} 
+                
+            end
         end
-        
+
+        result[:cached] = cache_exists
+        result
     end
 
     def validate_params
@@ -64,7 +79,6 @@ class CurrentWeatherController < ApplicationController
       end
       
       def valid_zipcode_in_country?(zipcode, country)
-        country = country.upcase
         valid = true
         error_message = ''
         valid_zipcodes_for_country = {
