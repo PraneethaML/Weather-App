@@ -1,6 +1,6 @@
 <h1>Get Temperature</h1>
 
-<%= form_tag(get_temperature_path, method: :post) do %>
+<%= form_tag(get_temperature_path, method: :get) do %>
   <label for="zipcode">Zip Code:</label>
   <%= text_field_tag(:zipcode) %>
 
