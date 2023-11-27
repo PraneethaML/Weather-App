@@ -144,7 +144,7 @@ Example:
      - Retries messages can be sent by considering the error respones of external api
        
 ## Features considered but could not be implemented due to interest of time 
-- API authentication can be done by using the token system, which gives responses to only authenticated users and return errors otherwise
+- API authentication can be done by using the token system(csrf) , which gives responses to only authenticated users and return errors otherwise
 - Logging and Monitoring of the application
     - Add logs to the functions that returns a json consisting of input, output, method name etc.
     - For Monitoring in production, can add health check apis. There are gems that does this job. 
