@@ -36,28 +36,23 @@ module WeatherService
   
     def validate_params
         unless (weather_params[:zipcode].present? && weather_params[:country].present?)
-            flash.now[:error] = 'Zipcode & Country must be present'
-            render 'index'
-            return
+            return render_json_error('Zipcode & Country must be present')
         end
+        
         unless valid_zipcode?(weather_params[:zipcode])
-            flash.now[:error] = 'Invalid Zipcode. Zipcode should be a number'
-            render 'index'
-            return
-          end
+            return render_json_error('Invalid Zipcode. Zipcode should be a number')
+        end
         
         unless valid_country_code?(weather_params[:country])
-            flash.now[:error] = 'Invalid Country Code. Country code should be a string of alphabets'
-            render 'index'
-            return
+            return render_json_error('Invalid Country Code. Country code should be a string of alphabets')
         end
-    
+        
         zipcode_country_validity, error_message = valid_zipcode_in_country?(weather_params[:zipcode], weather_params[:country])
-        unless zipcode_country_validity
-            flash.now[:error] = error_message
-            render 'index'
-            return
-        end
+        return render_json_error(error_message) unless zipcode_country_validity    
+    end
+
+    def render_json_error(message)
+        render json: { success: false, error: message }, status: :unprocessable_entity
     end
   
     def valid_zipcode?(zipcode)

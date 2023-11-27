@@ -10,13 +10,9 @@
   <%= submit_tag("Get Temperature") %>
 <% end %>
 
-<% flash.each do |type, message| %>
-  <div class="alert alert-<%= type %>">
-    <%= message %>
-  </div>
-<% end %>
-
-<div id="temperature-container">
+<div id="error-message"></div>
+<div id="cached-message"></div>
+<div id="temperature-container" style="display: none;">
   <h2>Temperature</h2>
   <p id="current-temperature">Current Temperature: <span id="temperature-value"></span></p>
   <p id="min-temperature">Min Temperature: <span id="min-value"></span></p>
@@ -26,22 +22,39 @@
 <script>
   $(document).on('ajax:complete', function(event) {
     var responseData = event.detail[0].response;
-    response = JSON.parse(responseData)
-    var temperature = response['temperature']
-    var current = temperature['current']
-    var max = temperature['max']
-    var min = temperature['min']
-    var cached = response['cached']
+    var response = JSON.parse(responseData);
+    $('#error-message, #cached-message').empty();
 
-    $('#temperature-value').text(current);
-    $('#min-value').text(min);
-    $('#max-value').text(max); 
+    if (!response.success) {
+        // Display errors
+        $('#error-message').html('<div class="alert alert-danger">' + response.error + '</div>');
+        $('#temperature-container').hide();
+    } else {
+        // Display temperature
+        var temperature = response.temperature;
+        if (temperature === null) {
+            var current = "No data found";
+            var max = "No data found";
+            var min = "No data found";
+        } else {
+            var current = temperature.current;
+            var max = temperature.max;
+            var min = temperature.min;
+        }
+        
+        var cached = response.cached;
 
-    if (cached) {
-      $('#temperature-container').append('<p>Result served from cache</p>');
-    } else{
-      $('#temperature-container p:contains("Result served from cache")').remove();
+        $('#temperature-value').text(current);
+        $('#min-value').text(min);
+        $('#max-value').text(max);
+
+        // Show temperature container
+        $('#temperature-container').show();
+
+        // Update cache message
+        if (cached) {
+            $('#cached-message').html('<p>Result served from cache</p>');
+        } 
     }
   });
-  
 </script>
