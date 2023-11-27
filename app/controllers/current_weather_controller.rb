@@ -1,6 +1,7 @@
 class CurrentWeatherController < ApplicationController
   include ValidationService
   include CurrentTemperatureService
+  # Before calling the 'get_temperature' action, validate the parameters using the 'validate_params' method.
   before_action :validate_params, only: :get_temperature
 
   def index
@@ -15,7 +16,7 @@ class CurrentWeatherController < ApplicationController
   end
     
   private
-
+  # permit only the specified parameters (:zipcode, :country).
   def weather_params
     params.permit(:zipcode, :country)
   end

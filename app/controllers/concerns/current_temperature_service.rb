@@ -28,6 +28,7 @@ module CurrentTemperatureService
       Rails.cache.fetch(@cache_key, expires_in: CACHE_EXPIRY, &block)
     end
   
+     # Retrieve the current temperature based on the provided zipcode and country parameters using external api
     def fetch_temperature_from_api
       begin
         data = OpenWeatherConfig.client.current_zip(@zipcode, @country)
