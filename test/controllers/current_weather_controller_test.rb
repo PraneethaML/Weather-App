@@ -9,7 +9,9 @@ class CurrentWeatherControllerTest < ActionController::TestCase
 
   test "should get temperature if params are valid" do
     params = { zipcode: '12345', country: 'US' }
+
     get :get_temperature, params: params
+    
     assert_response :success
     json_response = JSON.parse(response.body)
     assert_equal true, json_response['success']

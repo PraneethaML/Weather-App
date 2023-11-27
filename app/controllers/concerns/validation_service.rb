@@ -24,20 +24,22 @@ module ValidationService
       render json: { success: false, error: message }, status: :unprocessable_entity
     end
   
+    # returns false if zipcode consists of non digits
     def valid_zipcode?(zipcode)
       /\A\d+\z/.match?(zipcode.to_s)
     end
   
+    # returns false if country contains digits 
     def valid_country_code?(country)
       /\A[A-Za-z]+\z/.match?(country)
     end
   
+    # checks if the country is servicable
     def valid_zipcode_in_country?(zipcode, country)
       valid = true
       error_message = ''
       valid_zipcodes_for_country = {
         'US' => /\A\d{5}\z/,
-        'CA' => /\A[ABCEGHJKLMNPRSTVXY]\d[A-Z] \d[A-Z]\d\z/,
         'IN' => /\A\d{6}\z/
       }
   
