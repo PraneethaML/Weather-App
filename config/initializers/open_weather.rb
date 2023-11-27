@@ -2,6 +2,7 @@
 
 OpenWeather.configure do |config|
     config.api_key = Rails.application.credentials.open_weather_api_key
+    config.timeout = 5
 end
   
 class OpenWeatherConfig
