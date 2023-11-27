@@ -139,4 +139,16 @@ Example:
  -  We are using filestore for storing the cache in development environment
  -  ### Note
      - can implement redis in production
-     - Currently, same status code is sent even for cached response. Ideally, good to send 304 repons 
+     - Currently, same status code is sent even for cached response. Ideally, good to send 304 repons
+     - Error Handling can be done better by also handling the errors of external api
+     - Retries messages can be sent by considering the error respones of external api
+     - 
+## Features considered but could not be implemented due to interest of time 
+- API authentication can be done by using the token system, which gives responses to only authenticated users and return errors otherwise
+- Logging and Monitoring of the application
+    - Add logs to the functions that returns a json consisting of input, output, method name etc.
+    - For Monitoring in production, can add health check apis. There are gems that does this job. 
+- Full Test coverage - Have added few tests but can do better by adding more unit tests for the concerns.
+- Rate limiting - Can use rack-attack gem to prevent the abuse of the app
+- Localization - using browsers locale, serve the response in that language.
+   
