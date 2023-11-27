@@ -1,6 +1,6 @@
 <h1>Get Temperature</h1>
 
-<%= form_tag(get_temperature_path, method: :get) do %>
+<%= form_tag(get_temperature_path, remote: true, method: :get, data: { type: :json, contentType: :json }) do %>
   <label for="zipcode">Zip Code:</label>
   <%= text_field_tag(:zipcode) %>
 
@@ -16,10 +16,32 @@
   </div>
 <% end %>
 
-<% if @temperature %>
-  <h2> Temperature </h2>
-  <p>Current Temperature: <%= @temperature[:current] %></p>
-  <p>Min Temperature: <%= @temperature[:min] %></p>
-  <p>Max Temperature: <%= @temperature[:max] %></p>
-<% end %>
+<div id="temperature-container">
+  <h2>Temperature</h2>
+  <p id="current-temperature">Current Temperature: <span id="temperature-value"></span></p>
+  <p id="min-temperature">Min Temperature: <span id="min-value"></span></p>
+  <p id="max-temperature">Max Temperature: <span id="max-value"></span></p>
+</div>
 
+<script>
+  $(document).on('ajax:complete', function(event) {
+    var responseData = event.detail[0].response;
+    response = JSON.parse(responseData)
+    var temperature = response['temperature']
+    var current = temperature['current']
+    var max = temperature['max']
+    var min = temperature['min']
+    var cached = response['cached']
+
+    $('#temperature-value').text(current);
+    $('#min-value').text(min);
+    $('#max-value').text(max); 
+
+    if (cached) {
+      $('#temperature-container').append('<p>Result served from cache</p>');
+    } else{
+      $('#temperature-container p:contains("Result served from cache")').remove();
+    }
+  });
+  
+</script>
