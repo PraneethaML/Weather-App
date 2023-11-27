@@ -138,11 +138,11 @@ Example:
  - When the request is served from cache, a flag is set to true and sent to the front end to indicate users that the request has been served from cache
  -  We are using filestore for storing the cache in development environment
  -  ### Note
-     - can implement redis in production
+     - Can implement redis in production
      - Currently, same status code is sent even for cached response. Ideally, good to send 304 repons
      - Error Handling can be done better by also handling the errors of external api
      - Retries messages can be sent by considering the error respones of external api
-     - 
+       
 ## Features considered but could not be implemented due to interest of time 
 - API authentication can be done by using the token system, which gives responses to only authenticated users and return errors otherwise
 - Logging and Monitoring of the application
