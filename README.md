@@ -24,8 +24,8 @@
   - run `bundle install` 
   - run `npm install` 
   - run `rails s` to run the server
+  - run `rails dev:cache` to set up cache in development environment
 
-* ...
 # Weather-App
 # API Documentation
 
