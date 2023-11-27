@@ -1,19 +1,19 @@
 <h1>Get Temperature</h1>
-
+<p> For demo purpose, currently supporting  only 'IN' (India) & 'US' (USA) countries </p>
 <%= form_tag(get_temperature_path, remote: true, method: :get, data: { type: :json, contentType: :json }) do %>
   <label for="zipcode">Zip Code:</label>
-  <%= text_field_tag(:zipcode) %>
+  <%= text_field_tag(:zipcode, nil, required: true) %>
 
-  <label for="country">Country:</label>
-  <%= text_field_tag(:country) %>
-
+  <label for="country">Country code [IN/US]: </label>
+  <%= text_field_tag(:country, nil, required: true) %>
+  
   <%= submit_tag("Get Temperature") %>
 <% end %>
 
 <div id="error-message"></div>
 <div id="cached-message"></div>
 <div id="temperature-container" style="display: none;">
-  <h2>Temperature</h2>
+  <h2>Temperature in celcius</h2>
   <p id="current-temperature">Current Temperature: <span id="temperature-value"></span></p>
   <p id="min-temperature">Min Temperature: <span id="min-value"></span></p>
   <p id="max-temperature">Max Temperature: <span id="max-value"></span></p>
