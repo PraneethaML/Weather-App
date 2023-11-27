@@ -1,6 +1,7 @@
 class CurrentWeatherController < ApplicationController
     include ValidationService
     include CurrentTemperatureService
+    before_action :validate_params, only: :get_temperature
 
     def index
         render 'index'

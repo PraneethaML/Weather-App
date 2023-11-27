@@ -3,9 +3,8 @@ module CurrentTemperatureService
   
     CACHE_EXPIRY = 30.minutes
   
-    included do
-    end
-  
+    private 
+
     def get_temperature_by_zipcode(zipcode, country)
       initialize_service(zipcode, country)
       cache_exists = cache_exist?
@@ -14,8 +13,6 @@ module CurrentTemperatureService
       result[:cached] = cache_exists
       result
     end
-  
-    private
   
     def initialize_service(zipcode, country)
       @zipcode = zipcode

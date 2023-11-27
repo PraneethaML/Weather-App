@@ -1,10 +1,6 @@
 module ValidationService
     extend ActiveSupport::Concern
   
-    included do
-      before_action :validate_params, only: :get_temperature
-    end
-  
     private
   
     def validate_params
