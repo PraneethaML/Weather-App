@@ -50,13 +50,13 @@ On submitting the form, the API makes a GET call to retrieve the temperature.
 
 The API responds with a JSON object in the following format:
 
-```json
+```
 {
   "success": true,
   "temperature": {current: 25.3, min: 23.4, max: 23.9},
   "cached": true/false  
 }
-
+```
 ### Request Parameters
 
 - `zipcode` (mandatory): The postal code for the location.
@@ -66,13 +66,42 @@ The API responds with a JSON object in the following format:
 
 The API responds with a JSON object in the following format:
 
-```json
+```
 {
   "success": true,
   "temperature": {current: 25.3, min: 23.4, max: 23.9},
   "cached": true/false
 }
+```
 
 - success (boolean): Indicates whether the request was successful.
 - temperature (json): Current, min, max temperature values for the specified location.
 - cached (boolean): Indicates whether the temperature value was retrieved from a cache.
+
+### Example
+
+- Request
+GET /get_temperature?zipcode=12345&country=example
+
+- Response
+```
+{
+  "success": true,
+  "temperature": 25.5,
+  "cached": false
+}
+
+```
+
+
+### Error Handling
+If there are errors in the request, the API will respond with an appropriate error message.
+
+Example:
+```
+{
+  "success": false,
+  "error": "Invalid Zip Code"
+}
+
+```
