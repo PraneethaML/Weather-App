@@ -131,8 +131,8 @@ Following HTTP status codes are sent in case of errors
    - Validation on the zipcode. Since we are currently considering only US & IN where these zipcodes are numbers only. Validation is done such that it *accepts only numbers*.
        - However, in future, when we provide services to more countries, this will have to be extended to handle other country formats too.
    - Validation on country such that it *accepts only letters*
-   - Validation on the country input. If it requests, the *countries that we do not service*, then it returns errors.
-   - Validation on the *zipcode pattern* for the country. If the zipcode does not match with the pattern for that country, it returns error that there is no zipcode with that value in that country
+   - Validation on the country input. If it requests, the **countries that we do not service**, then it returns errors.
+   - Validation on the **zipcode pattern** for the country. If the zipcode does not match with the pattern for that country, it returns error that there is no zipcode with that value in that country
    - Above mentioned validation methods have been extracted to a **ValidationService** rails concern `app/controllers/concerns/validation_service.rb`
  - If the validations are all passed, the control goes to `get_temperature_by_zipcode` method
  - This and the helpers methods for `get_temperature_by_zipcode` are defined in `app/controllers/concerns/current_temperature_service.rb`
@@ -140,8 +140,9 @@ Following HTTP status codes are sent in case of errors
      - [Reference to the api] (https://openweathermap.org/current#zip)
      - [Reference to the open-weather-ruby-client] (https://github.com/dblock/open-weather-ruby-client)
  - **Open Weather external api requires us to use an api key. This key has been saved in credentials.yml.enc which is encrypted using the master key. The master key has been shared on email.**
- - Once the request is fetched using the api, it is *cached for 30 mins.* So that subsequent requests with the same zipcode is served from cache
-  ## Note: Validation is done in a before action filter. 
+ - Once the request is fetched using the api, it is **cached for 30 mins**. So that subsequent requests with the same zipcode is served from cache
+  ## Note: 
+  - Validation is done in a before action filter. 
   - TODO: Have the caching done before validation so that the invalid requests are also cached. 
  - When the request is served from cache, a flag is set to true and sent to the front end to indicate users that the request has been served from cache
  -  We are using filestore for storing the cache in development environment
