@@ -142,11 +142,10 @@ Following HTTP status codes are sent in case of errors
  - **Open Weather external api requires us to use an api key. This key has been saved in credentials.yml.enc which is encrypted using the master key. The master key has been shared on email.**
  - Once the request is fetched using the api, it is **cached for 30 mins**. So that subsequent requests with the same zipcode is served from cache
   ## Note: 
-  - Validation is done in a before action filter. 
-  - TODO: Have the caching done before validation so that the invalid requests are also cached. 
+  - Validation is done in a before_action filter. 
+  - TODO: cache needs to be done before validation so that the invalid requests are also cached. 
  - When the request is served from cache, a flag is set to true and sent to the front end to indicate users that the request has been served from cache
  -  We are using filestore for storing the cache in development environment
- -  ### Note
      - Can implement redis in production
      - Currently, same status code is sent even for cached response. Ideally, good to send 304 reponse
      - Retries messages can be sent by considering the error respones of external api
@@ -158,7 +157,8 @@ Following HTTP status codes are sent in case of errors
 - **Logging and Monitoring of the application** 
     - Configure logging and add various info/error logs.
     - For Monitoring in production, can configure external tools
-- **Full Test coverage** - Have added few tests but can do better by adding more unit tests for the concerns.
-- **Scaling** - Can consider tools like Kubernetes for scaling. 
+- **Full Test coverage** - Added few tests but need to add more unit tests
+- **Scaling** - Can consider tools like Kubernetes for scaling
+- **Caching** - File_store has been used for caching in development. In Production, can consider redis or similar
 
    
