@@ -30,7 +30,8 @@ module CurrentTemperatureService
 
   # Retrieve the current temperature based on the provided zipcode and country parameters using external api
   def fetch_temperature_from_api
-    response = { temperature: nil }
+    response = { temperature: nil, error: nil, status: nil }
+    
     begin
       data = OpenWeatherConfig.client.current_zip(@zipcode, @country)
       response[:temperature] = {
@@ -38,33 +39,27 @@ module CurrentTemperatureService
         max: data.main.temp_max_c,
         min: data.main.temp_min_c
       }
-    rescue Faraday::ResourceNotFound, Faraday::UnauthorizedError, Faraday::TooManyRequestsError => e
-      puts "Handling error: #{e.response}"
-      error_message = case e
-                      when Faraday::ResourceNotFound
-                        "Not Found - Data with requested parameters does not exist"
-                      when Faraday::Unauthorized
-                        "Unauthorized - API token is missing or invalid"
-                      when Faraday::TooManyRequestsError
-                        "Too Many Requests - Key quota exceeded"
-                      end
-      status = e.response[:body]['cod'] || 503
-      error_msg = "#{error_message}. Status: #{status}"
+    rescue Faraday::ResourceNotFound => e
+      handle_error(response, e, 'Sorry! We currently do not have the data for these parameters.')
+    rescue Faraday::UnauthorizedError => e
+      handle_error(response, e, 'Unauthorized - API token is missing or invalid')
+    rescue Faraday::TooManyRequestsError => e
+      handle_error(response, e, 'Too Many Requests - Key quota exceeded')
     rescue Faraday::ConnectionFailed => e
-      puts "Handling connection failure: #{e.response}"
-      error_msg = 'Connection Failed'
-      status = e.response[:body]['cod'] || 503
+      handle_error(response, e, 'Connection Failed')
     rescue StandardError => e
-      # TODO: Invalid api key is also giving in standard error
-      puts "Handling standard error: #{e.response}"
-      error_msg = e.message
-      status = e.response[:body]['cod'] || 503
+      handle_error(response, e, 'Sorry, we encountered an unexpected error. Please try later.')
     ensure
-      response[:error] = error_msg
-      response[:status] = status
-      puts "Response after external api is #{response}"
-      return response  
+      puts "Response after external API call: #{response}"
+      return response
     end
-  end    
+  end
+
+  def handle_error(response, error, error_message)
+    puts "Handling error: #{error.response}"
+    status = error.response[:body]['cod'] || 503
+    response[:error] = error_message
+    response[:status] = status
+  end
 end
   

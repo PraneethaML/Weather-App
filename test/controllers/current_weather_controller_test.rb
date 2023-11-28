@@ -8,7 +8,7 @@ class CurrentWeatherControllerTest < ActionController::TestCase
   end
 
   test "should get temperature if params are valid" do
-    params = { zipcode: '12345', country: 'US' }
+    params = { zipcode: '500014', country: 'IN' }
 
     get :get_temperature, params: params
     
