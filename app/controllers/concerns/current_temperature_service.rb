@@ -41,26 +41,27 @@ module CurrentTemperatureService
         min: data.main.temp_min_c
       }
     rescue Faraday::ResourceNotFound, Faraday::UnauthorizedError, Faraday::TooManyRequestsError => e
-      status_code = e.response[:body]['cod'] || 503
-      puts "Handling error: #{e.message}"
+      puts "Handling error: #{e.response}"
       error_message = case e
                       when Faraday::ResourceNotFound
                         "Not Found - Data with requested parameters does not exist"
-                      when Faraday::UnauthorizedError
+                      when Faraday::Unauthorized
                         "Unauthorized - API token is missing or invalid"
                       when Faraday::TooManyRequestsError
                         "Too Many Requests - Key quota exceeded"
                       end
       response[:error] = "#{error_message}. Status: #{status_code}"
     rescue Faraday::ConnectionFailed => e
-      puts "Handling connection failure: #{e.message}"
+      puts "Handling connection failure: #{e.response}"
       response[:error] = 'Connection Failed'
     rescue StandardError => e
-      puts "Handling standard error: #{e.message}"
+      # TODO: Invalid api key is also giving in standard error
+      puts "Handling standard error: #{e.response}"
       response[:error] = e.message
     ensure
-      puts "Response after external api is #{response}"
+      status_code = e.response[:body]['cod'] || 503
       response[:status] = status_code
+      puts "Response after external api is #{response}"
       return response  
     end
   end    
