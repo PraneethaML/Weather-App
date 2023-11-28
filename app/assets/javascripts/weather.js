@@ -1,5 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('in weather.js')
+$(function() {
   $(document).on('ajax:complete', function(event) {
     var responseData = event.detail[0].response;
     var response = JSON.parse(responseData);
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Show temperature container
       $('#temperature-container').show();
 
-      // Update cache message
+      // Show cache message
       if (cached) {
           $('#cached-message').html('<p>Result served from cache</p>');
       } 

@@ -36,6 +36,7 @@ module ValidationService
   
     # checks if the country is servicable
     def valid_zipcode_in_country?(zipcode, country)
+      country = country.upcase
       valid = true
       error_message = ''
       valid_zipcodes_for_country = {
