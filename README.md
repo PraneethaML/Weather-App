@@ -148,7 +148,7 @@ Following HTTP status codes are sent in case of errors
  -  We are using filestore for storing the cache in development environment
      - Can implement redis in production
      - Currently, same status code is sent even for cached response. Ideally, good to send 304 reponse
-     - Retries messages can be sent by considering the error respones of external api
+     - Retry messages can be sent by considering the error respones of external api
        
 ## TODO: Tasks to be done before production deployment
 - **Security** 
