@@ -11,8 +11,13 @@ class CurrentWeatherController < ApplicationController
   def get_temperature
     result = get_temperature_by_zipcode(weather_params[:zipcode], weather_params[:country])
     @temperature = result[:temperature]
-    # status_code = result[:cached] ? :not_modified : :ok
-    render json: { success: true, temperature: @temperature, cached: result[:cached] }, status: :ok
+    puts "Final result rendered: #{result}"
+    if @temperature.nil?
+      error_status = result[:status] 
+      render json: { success: false, temperature: @temperature, error:result[:error], cached: result[:cached] }, status: error_status
+    else
+      render json: { success: true, temperature: @temperature, cached: result[:cached] }, status: :ok
+    end
   end
     
   private
