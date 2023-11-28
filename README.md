@@ -111,7 +111,7 @@ Following HTTP status codes are sent in case of errors
 - 401 - Unauthorized. External API api key is not granted access
 - 404 - Data not found in the external api service database
 - 429 - Too Many Requests to external api
-- 503 - External service not reachable or status code not 
+- 503 - External service not reachable
 
 # Project Flow Documentation
 
